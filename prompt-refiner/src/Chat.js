@@ -7,7 +7,7 @@ function Chat() {
   const [input, setInput] = useState('');
 
   const anthropic = new Anthropic({
-    apiKey: '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',
+    apiKey: 'api-code-here',
   });
 
   // const callAnthropicAPI = async (prompt) => {
@@ -19,7 +19,7 @@ function Chat() {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json',
-  //         'x-api-key': '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',
+  //         'x-api-key': 'api-code',
   //         'anthropic-version': '2023-04-02',
   //       },
   //       body: JSON.stringify({
