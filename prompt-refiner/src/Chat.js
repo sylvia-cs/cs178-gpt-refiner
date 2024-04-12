@@ -1,53 +1,82 @@
 import React, { useState } from 'react';
 import Anthropic from '@anthropic-ai/sdk';
+import axios from 'axios';
 
 
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
-  const anthropic = new Anthropic({
-    apiKey: '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',
-  });
+  // const anthropic = new Anthropic({
+  //   apiKey: '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',
+  // });
 
-  // const callAnthropicAPI = async (prompt) => {
-  //   const proxyUrl = 'http://localhost:8080/';
-  //   const apiUrl = 'https://api.anthropic.com/v1/complete';
-  
-  //   try {
-  //     const response = await fetch(`${proxyUrl}${apiUrl}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'x-api-key': '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',
-  //         'anthropic-version': '2023-04-02',
-  //       },
-  //       body: JSON.stringify({
-  //         model: 'claude-3-opus-20240229',
-  //         max_tokens: 1024,
-  //         messages: [{ role: 'user', content: prompt }],
-  //       }),
-  //     });
-  
-  //     const data = await response.json();
-  //     console.log(data.result);
-  //     return data.result.message.content;
-  //   } catch (error) {
-  //     console.error('Error calling Anthropic API:', error);
-  //     return 'Error occurred while calling the Anthropic API.';
-  //   }
-  // };
+const callAnthropicAPI2 = async (prompt) => {
+  const apiUrl = 'https://api.anthropic.com/v1/complete';
+  const apiKey = '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';
+
+  try {
+    const response = await axios.post(
+      apiUrl,
+      {
+        model: 'claude-3-opus-20240229',
+        max_tokens: 1024,
+        prompt: prompt,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+      }
+    );
+
+    return response.data.result.completionOutput;
+  } catch (error) {
+    console.error('Error calling Anthropic API:', error);
+    return 'Error occurred while calling the Anthropic API.';
+  }
+};
 
   const callAnthropicAPI = async (prompt) => {
-    await anthropic.messages.create({
-      model: "claude-3-opus-20240229",
-      max_tokens: 1024,
-      messages: [
-        {"role": "user", "content": "Hello, world"}
-      ]
-    });
+    const proxyUrl = 'http://localhost:8080/';
+    const apiUrl = 'https://api.anthropic.com/v1/messages';
   
+    try {
+      const response = await axios.post(`${apiUrl}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': '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',
+          'anthropic-version': '2023-04-02',
+        },
+        body: JSON.stringify({
+          model: 'claude-3-opus-20240229',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      });
+  
+      const data = await response.json();
+      console.log(data.result);
+      return data.result.message.content;
+    } catch (error) {
+      console.error('Error calling Anthropic API:', error);
+      return 'Error occurred while calling the Anthropic API.';
+    }
+  };
 
+  // const callAnthropicAPI = async (prompt) => {
+  //   await anthropic.messages.create({
+  //     model: "claude-3-opus-20240229",
+  //     max_tokens: 1024,
+  //     messages: [
+  //       {"role": "user", "content": "Hello, world"}
+  //     ]
+  //   });
+  // }
+  
 
   const sendMessage = () => {
     if (input.trim() === '') return;
